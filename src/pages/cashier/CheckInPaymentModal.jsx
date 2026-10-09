@@ -226,7 +226,7 @@ function CheckInPaymentModal({
   const promoCartLines = useMemo(() => buildBookingPromoCartLines(booking), [booking]);
   const methods = [
     { value: "cash", label: "Cash", icon: "banknote", bg: "#F23B20" },
-    { value: "card", label: "Credit / Debit", icon: "credit-card", bg: "#FF8A00" },
+    { value: "card", label: "Credit / Debit", icon: "credit-card", bg: "#7220E6" },
     { value: "gift_card", label: "Gift Card", icon: "gift", bg: "#1687F5" },
     { value: "check", label: "Check", icon: "receipt", bg: "#D8D8D8", fg: "#111" },
   ];
@@ -469,13 +469,13 @@ function CheckInPaymentModal({
               <div style={{ background: "#FFFDD1", border: "1.5px solid var(--ink-400)", padding: 12, fontSize: 14, fontWeight: 800 }}>
                 <TotalLine label="Order Total" value={moneyFmt(subTotal)} />
                 <TotalLine label="Existing Promos" value={moneyFmt(existingDiscount)} />
-                <TotalLine label="POS Discount" value={moneyFmt(discountAmount)} tone={discountAmount > 0 ? "#F45B0A" : undefined} />
+                <TotalLine label="POS Discount" value={moneyFmt(discountAmount)} tone={discountAmount > 0 ? "#7220E6" : undefined} />
                 <div style={{ borderTop: "3px solid var(--ink-900)", margin: "8px 0" }} />
                 <TotalLine label="Sub Total" value={moneyFmt(Math.max(0, subTotal - existingDiscount - discountAmount))} />
                 <TotalLine label={taxLineLabel(booking)} value={moneyFmt(taxAmount)} />
                 <div style={{ borderTop: "3px solid var(--ink-900)", margin: "8px 0" }} />
                 <TotalLine label={totalWithTaxLabel("Balance due", taxAmount)} value={moneyFmt(balanceDue)} tone="#08A5E8" />
-                <TotalLine label="Tender Due" value={moneyFmt(payableBalance)} tone="#F45B0A" />
+                <TotalLine label="Tender Due" value={moneyFmt(payableBalance)} tone="#7220E6" />
                 <TotalLine label="Tendered" value={moneyFmt(tendered)} />
                 <TotalLine
                   label={cashCoversBalance ? "Change" : "Balance Remaining"}
@@ -582,7 +582,7 @@ function CheckInPaymentModal({
                   </div>
                 )}
                 {discountAmount > 0 && (
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "#F45B0A", marginTop: 6 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", color: "#7220E6", marginTop: 6 }}>
                     <span>{discount?.label || "Promo"}</span>
                     <span>-{moneyFmt(discountAmount)}</span>
                   </div>

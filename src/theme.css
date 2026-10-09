@@ -5,38 +5,39 @@
 /* ever embedded inside another shell.                                   */
 
 [data-app="cashier"] {
-  --aero-orange-50:  #FFF4EC;
-  --aero-orange-100: #FFE4D0;
-  --aero-orange-200: #FFC59A;
-  --aero-orange-300: #FFA15F;
-  --aero-orange-400: #FF7A24;
-  --aero-orange-500: #F45B0A;
-  --aero-orange-600: #D14808;
-  --aero-orange-700: #A33706;
-  --aero-orange-800: #6E2604;
+  /* Legacy token names, mapped to the Movira logo palette. */
+  --aero-orange-50:  #F2EDFF;
+  --aero-orange-100: #E2D7FF;
+  --aero-orange-200: #C6B2FF;
+  --aero-orange-300: #A987FF;
+  --aero-orange-400: #8B5CFF;
+  --aero-orange-500: #7220E6;
+  --aero-orange-600: #5A31DA;
+  --aero-orange-700: #480D9A;
+  --aero-orange-800: #2A086E;
 
-  --aero-yellow-300: #FFCF1F;
-  --aero-yellow-400: #E9B400;
+  --aero-yellow-300: #18B8C9;
+  --aero-yellow-400: #0E8E9C;
 
   --aero-electric-300: #8E6BFF;
-  --aero-electric-400: #6A40F5;
-  --aero-electric-500: #4F25C9;
+  --aero-electric-400: #7220E6;
+  --aero-electric-500: #480D9A;
 
   --aero-cyan-400:    #18B8C9;
   --aero-lime-300:    #C6F25C;
 
   --ink-0:   #FFFFFF;
-  --ink-25:  #FBF8F5;
-  --ink-50:  #F5F0EA;
-  --ink-100: #ECE5DC;
-  --ink-200: #D9CFC1;
-  --ink-300: #B7AB99;
-  --ink-400: #8C8273;
-  --ink-500: #5F584C;
-  --ink-600: #3F3A31;
-  --ink-700: #2A2620;
-  --ink-800: #1A1814;
-  --ink-900: #0F0E0B;
+  --ink-25:  #FAFAFF;
+  --ink-50:  #F3F1FB;
+  --ink-100: #E7E3F1;
+  --ink-200: #D5CFE5;
+  --ink-300: #B1A9C4;
+  --ink-400: #867E99;
+  --ink-500: #625A74;
+  --ink-600: #464052;
+  --ink-700: #302A3E;
+  --ink-800: #1D1829;
+  --ink-900: #100B1C;
 
   --color-success: #1F9D55;
   --color-success-soft: #DDF3E3;
@@ -71,9 +72,9 @@ html, body, #root {
   overflow: hidden;
 }
 body {
-  background: var(--ink-25, #FBF8F5);
+  background: var(--ink-25, #FAFAFF);
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  color: var(--ink-800, #1A1814);
+  color: var(--ink-800, #1D1829);
 }
 
 /* ── Reusable cashier button (a-btn-style for the new app) ────── */

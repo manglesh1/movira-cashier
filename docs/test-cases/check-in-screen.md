@@ -9,7 +9,7 @@ Scope: Cashier POS check-in screen, booking list buckets, guest check-in, waiver
 - At least one booking has unpaid balance.
 - At least one booking has 3+ guests.
 - At least one booking has valid signed waiver coverage.
-- At least one booking has party/session extras configured.
+- At least one booking has party/session add-ons configured.
 - Backend and Cashier frontend are restarted after latest changes.
 
 ## Booking List Buckets
@@ -119,8 +119,8 @@ Scope: Cashier POS check-in screen, booking list buckets, guest check-in, waiver
 
 ### CHK-016 Party Extras Tab
 - Click `Add item`.
-- Select `Party extras`.
-- Expected: configured extras for the booked party/session are listed.
+- Select `Recommended add-ons`.
+- Expected: configured add-ons for the booked party/session are listed.
 - Expected: each row shows product, variation, price, quantity controls, and Add button.
 
 ### CHK-017 All Products Search
@@ -155,4 +155,3 @@ Scope: Cashier POS check-in screen, booking list buckets, guest check-in, waiver
 - Click `Back to check-in`.
 - Expected: editor closes.
 - Expected: selected booking, tickets, and payment rail refresh.
-

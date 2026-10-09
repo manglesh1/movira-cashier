@@ -2376,7 +2376,7 @@ function GuestWorkflowPanel({
                       alignItems: "center",
                       justifyContent: "center",
                       flexShrink: 0,
-                      background: isBound ? "rgba(244,91,10,0.18)" : "rgba(0,0,0,0.08)",
+                      background: isBound ? "rgba(114, 32, 230,0.18)" : "rgba(0,0,0,0.08)",
                       color: participant.hasValidWaiver ? "#137A35" : "var(--ink-600)",
                     }}
                   >
@@ -2846,7 +2846,7 @@ function OrderAddItemModal({ bookingId, onAdd, onClose }) {
           <div>
             <div style={{ fontSize: 18, fontWeight: 900, color: "var(--ink-900)" }}>Add item</div>
             <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 2 }}>
-              Add extras or stock items to this booking order.
+              Choose add-ons or inventory items for this booking order.
             </div>
           </div>
           <button type="button" onClick={onClose} style={{ all: "unset", cursor: "pointer", padding: 4 }}>
@@ -2856,7 +2856,7 @@ function OrderAddItemModal({ bookingId, onAdd, onClose }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           {[
-            ["recommended", "Party extras"],
+            ["recommended", "Recommended add-ons"],
             ["all", "All products"],
           ].map(([key, label]) => (
             <button
@@ -2902,7 +2902,7 @@ function OrderAddItemModal({ bookingId, onAdd, onClose }) {
             <div style={{ padding: 22, textAlign: "center", color: "var(--ink-500)" }}>Loading...</div>
           ) : rows.length === 0 ? (
             <div style={{ padding: 22, textAlign: "center", color: "var(--ink-500)" }}>
-              {tab === "recommended" ? "No party extras are configured for this booking." : "No products found."}
+              {tab === "recommended" ? "No add-ons are configured for this booking." : "No products found."}
             </div>
           ) : (
             rows.map((item) => {
@@ -3251,7 +3251,7 @@ function BoundHolderChip({ participant, onUnbind, busy }) {
   const ready = !!participant?.hasValidWaiver;
   const palette = ready
     ? { bg: "#EAF8EF", border: "#8AD5A3", fg: "#137A35", xBg: "rgba(19,122,53,0.15)", xBgHover: "rgba(19,122,53,0.30)" }
-    : { bg: "var(--aero-orange-50, #FFF1E8)", border: "var(--aero-orange-500, #F45B0A)", fg: "var(--aero-orange-700, #B8400A)", xBg: "rgba(244,91,10,0.15)", xBgHover: "rgba(244,91,10,0.30)" };
+    : { bg: "var(--aero-orange-50, #F2EDFF)", border: "var(--aero-orange-500, #7220E6)", fg: "var(--aero-orange-700, #480D9A)", xBg: "rgba(114, 32, 230,0.15)", xBgHover: "rgba(114, 32, 230,0.30)" };
   return (
     <div style={{ marginTop: 6, display: "inline-flex", alignItems: "center", gap: 4 }}>
       <span style={{ fontSize: 10, fontWeight: 800, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: "0.06em", marginRight: 4 }}>
@@ -3353,7 +3353,7 @@ function HolderPicker({ candidates, onPick, onSearch, busy }) {
             all: "unset", cursor: busy ? "wait" : "pointer",
             display: "inline-flex", alignItems: "center", gap: 5,
             padding: "4px 10px", borderRadius: 999,
-            background: isSingle ? "var(--aero-orange-50, #FFF1E8)" : "white",
+            background: isSingle ? "var(--aero-orange-50, #F2EDFF)" : "white",
             border: `1.5px solid ${isSingle ? "var(--aero-orange-500)" : "var(--ink-300)"}`,
             fontSize: 11, fontWeight: 700,
             color: isSingle ? "var(--aero-orange-700)" : "var(--ink-800)",

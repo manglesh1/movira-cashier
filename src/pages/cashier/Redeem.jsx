@@ -900,7 +900,7 @@ function EntitlementCard({ e, selected, onToggle, disabled, onAttachWaiver }) {
     <div
       style={{
         background: "white",
-        border: "1.5px solid #F45B0A",
+        border: "1.5px solid #7220E6",
         borderRadius: 12,
         padding: "12px 14px",
         display: "flex",
@@ -915,7 +915,7 @@ function EntitlementCard({ e, selected, onToggle, disabled, onAttachWaiver }) {
         disabled={disabled || e.remainingQty <= 0}
         aria-label={`Select ${title}`}
       />
-      <Icon name="package" size={20} style={{ color: "#F45B0A" }} />
+      <Icon name="package" size={20} style={{ color: "#7220E6" }} />
       <div style={{ flex: 1, lineHeight: 1.4 }}>
         <div style={{ fontWeight: 700, fontSize: 14 }}>
           {title}

@@ -123,7 +123,7 @@ export default function UniversalSearch({ onAddVoucherToCart }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search or scan voucher, gift card, membership, customer..."
-          className="w-full rounded-lg border border-gray-200 bg-white py-3 pl-10 pr-10 text-sm outline-none focus:border-orange-400"
+          className="w-full rounded-lg border border-gray-200 bg-white py-3 pl-10 pr-10 text-sm outline-none focus:border-violet-400"
           aria-label="Universal search"
           autoComplete="off"
           spellCheck={false}
@@ -183,7 +183,7 @@ function PackResult({ pack, onAddToCart }) {
     <div className="px-3 py-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="text-xs font-bold uppercase tracking-wide text-orange-600">
+          <div className="text-xs font-bold uppercase tracking-wide text-violet-600">
             Voucher pack
           </div>
           <div className="mt-0.5 text-sm font-semibold text-gray-900 truncate">
@@ -199,7 +199,7 @@ function PackResult({ pack, onAddToCart }) {
           <button
             type="button"
             onClick={() => onAddToCart({ kind: "pack", pack, inclusions })}
-            className="rounded-md bg-orange-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-orange-600"
+            className="rounded-md bg-violet-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-600"
           >
             Add all to cart
           </button>
@@ -222,7 +222,7 @@ function PackResult({ pack, onAddToCart }) {
               <button
                 type="button"
                 onClick={() => onAddToCart({ kind: inc.kind, item: inc })}
-                className="rounded border border-orange-300 px-2 py-0.5 text-[10px] font-bold text-orange-600 hover:bg-orange-50"
+                className="rounded border border-violet-300 px-2 py-0.5 text-[10px] font-bold text-violet-600 hover:bg-violet-50"
               >
                 Add
               </button>
@@ -247,7 +247,7 @@ function SingleVoucherResult({ kind, item, onAddToCart }) {
     <div className="px-3 py-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="text-xs font-bold uppercase tracking-wide text-orange-600">
+          <div className="text-xs font-bold uppercase tracking-wide text-violet-600">
             {kind === "entitlement" ? "Voucher entitlement" : "Voucher"}
           </div>
           <div className="mt-0.5 text-sm font-semibold text-gray-900 truncate">
@@ -263,7 +263,7 @@ function SingleVoucherResult({ kind, item, onAddToCart }) {
           <button
             type="button"
             onClick={() => onAddToCart({ kind, item })}
-            className="rounded-md bg-orange-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-orange-600"
+            className="rounded-md bg-violet-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-600"
           >
             Add to cart
           </button>

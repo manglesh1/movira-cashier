@@ -2,6 +2,7 @@ import React from "react";
 import { Icon } from "../pages/cashier/Icon";
 import { moneyFmt, roundMoney } from "../lib/money";
 import { formatDisplayDate } from "../lib/date";
+import { formatPhoneNumber } from "../utils/phoneNumber";
 
 export const responseDataItems = (response) => response?.data || [];
 
@@ -28,7 +29,7 @@ export const customerEmailOf = (item) =>
   item?.customerEmail || item?.guestEmail || item?.email || "";
 
 export const customerPhoneOf = (item) =>
-  item?.customerPhone || item?.guestPhone || item?.phone || "";
+  formatPhoneNumber(item?.customerPhone || item?.guestPhone || item?.phone || "", item?.locationCountry);
 
 export const customerContactOf = (item) =>
   [customerEmailOf(item), customerPhoneOf(item)].filter(Boolean).join(" · ") ||

@@ -32,7 +32,7 @@ const fmtDate = (value, fallback = "-") => {
   });
 };
 
-const PALETTE = ["#F45B0A", "#6A40F5", "#18B8C9", "#1F9D55", "#D6361A", "#E9A100"];
+const PALETTE = ["#7220E6", "#7220E6", "#18B8C9", "#1F9D55", "#D6361A", "#E9A100"];
 const colorFor = (name) =>
   PALETTE[(String(name || "?").charCodeAt(0) + String(name || "").length) % PALETTE.length];
 

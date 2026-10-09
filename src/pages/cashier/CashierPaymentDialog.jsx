@@ -64,7 +64,7 @@ function buildBookingPromoCartLines(booking) {
 // card, so a gift card + cash/card/check is one flow (split tender).
 const PAYMENT_METHODS = [
   { value: "cash", label: "Cash", icon: "banknote", bg: "#F23B20" },
-  { value: "card", label: "Credit / Debit", icon: "credit-card", bg: "#FF8A00" },
+  { value: "card", label: "Credit / Debit", icon: "credit-card", bg: "#7220E6" },
   { value: "check", label: "Check", icon: "receipt", bg: "#D8D8D8", fg: "#111" },
 ];
 const QUICK_CASH = [1, 5, 10, 20, 50, 100];

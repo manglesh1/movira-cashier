@@ -5,7 +5,7 @@ export const isPartyProduct = (item) => {
 
 export const isAddOnProduct = (item) => {
   const type = String(item?.productType || item?.activityTypeKey || "").toLowerCase();
-  return type.includes("add_on") || type.includes("addon") || type.includes("add-on");
+  return type.includes("add_on") || type.includes("add-on");
 };
 
 const productTypeKey = (item) =>

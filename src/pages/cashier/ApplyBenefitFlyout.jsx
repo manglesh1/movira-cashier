@@ -26,7 +26,7 @@ import {
 } from "../../features/vouchers/voucherApi";
 
 const ACCENT = {
-  promo: "#F45B0A",    // aero-orange
+  promo: "#7220E6",    // aero-orange
   member: "#6366F1",   // indigo
   voucher: "#22C55E",  // green
   gift: "#EC4899",     // pink

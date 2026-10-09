@@ -642,9 +642,9 @@ function VoucherInclusionsView({ searching, error, pack, inclusions, onAdd, onCl
                     style={{
                       fontSize: 10, fontWeight: 800, letterSpacing: 0.5,
                       padding: "2px 6px", borderRadius: 6, marginLeft: "auto",
-                      background: "var(--aero-orange-50, #FFF3E6)",
-                      color: "var(--aero-orange-700, #B85C00)",
-                      border: "1px solid var(--aero-orange-200, #FFD6A8)",
+                      background: "var(--aero-orange-50, #F2EDFF)",
+                      color: "var(--aero-orange-700, #480D9A)",
+                      border: "1px solid var(--aero-orange-200, #C6B2FF)",
                       textTransform: "uppercase",
                     }}
                   >
@@ -699,7 +699,7 @@ function VoucherInclusionsView({ searching, error, pack, inclusions, onAdd, onCl
                 style={{
                   cursor: usable ? "pointer" : "default",
                   padding: "10px 14px", borderRadius: 10,
-                  background: usable ? "var(--aero-orange-500, #FF8A00)" : "var(--ink-200)",
+                  background: usable ? "var(--aero-orange-500, #7220E6)" : "var(--ink-200)",
                   color: usable ? "white" : "var(--ink-500)",
                   fontWeight: 800, fontSize: 14, border: "none",
                 }}

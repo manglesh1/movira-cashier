@@ -101,7 +101,7 @@ test("session and party products require a schedule selection", () => {
   assert.equal(needsScheduleSelection({ productType: "party_package" }), true);
   assert.equal(needsScheduleSelection({ productType: "stock_item" }), false);
   assert.equal(needsScheduleSelection({ productType: "voucher_pack" }), false);
-  assert.equal(needsScheduleSelection({ productType: "party_add_on" }), false);
+  assert.equal(needsScheduleSelection({ productType: "add_on" }), false);
 });
 
 test("schedule selection is present when a slot id is selected", () => {
@@ -113,7 +113,7 @@ test("schedule selection is present when a slot id is selected", () => {
 
 test("checkout matrix keeps retail and add-ons customer-free", () => {
   assert.equal(requiresCustomerForCheckout({ productType: "stock_item" }), false);
-  assert.equal(requiresCustomerForCheckout({ productType: "party_add_on" }), false);
+  assert.equal(requiresCustomerForCheckout({ productType: "add_on" }), false);
   assert.equal(requiresCustomerForCheckout({ productType: "food" }), false);
 });
 
@@ -174,7 +174,7 @@ test("phase 8: stock and food/add-on checkout can proceed without customer", () 
   assert.equal(stock.canPayNow, true);
 
   const foodAddon = getCheckoutRequirements([
-    { productType: "party_add_on", price: 6, qty: 2 },
+    { productType: "add_on", price: 6, qty: 2 },
     { productType: "food", price: 4, qty: 1 },
   ]);
   assert.equal(foodAddon.requiresCustomer, false);

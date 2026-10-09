@@ -179,7 +179,7 @@ export default function AddTipModal({ booking, onClose }) {
                       {base > 0 ? <span style={{ color: "var(--ink-500)", fontWeight: 600 }}> · {moneyFmt(base)}</span> : null}
                     </span>
                     <button type="button" onClick={detachBooking}
-                      style={{ all: "unset", cursor: "pointer", fontSize: 12, fontWeight: 800, color: "var(--aero-orange-600, #C2410C)" }}>
+                      style={{ all: "unset", cursor: "pointer", fontSize: 12, fontWeight: 800, color: "var(--aero-orange-600, #480D9A)" }}>
                       Walk-in instead
                     </button>
                   </div>

@@ -13,6 +13,7 @@ import {
   customerSuggestionItems,
   lookupItemKey,
 } from "../../components/cashierLookupRenderers";
+import { formatPhoneInput, isValidPhoneNumber, normalizePhoneNumber } from "../../utils/phoneNumber";
 
 const formatDob = (value) => {
   if (!value) return "DOB not on file";
@@ -34,6 +35,7 @@ export function CartWaiverModal({
   onChange,
   onCustomerChange,
   onClose,
+  locationCountry = "Canada",
 }) {
   const [query, setQuery] = useState("");
   const customerMode = mode === "customer" || Number(needed || 0) <= 0;
@@ -251,13 +253,17 @@ export function CartWaiverModal({
   const handleQuickCreateCustomer = () => {
     const name = quickName.trim();
     const email = quickEmail.trim();
-    const phone = quickPhone.trim();
+    const phone = normalizePhoneNumber(quickPhone, locationCountry);
     if (!name) {
       toast.error("Customer name is required.");
       return;
     }
     if (!email && !phone) {
       toast.error("Add email or phone for the booking owner.");
+      return;
+    }
+    if (!isValidPhoneNumber(quickPhone, locationCountry)) {
+      toast.error(`Enter a valid phone number for ${locationCountry}.`);
       return;
     }
     onCustomerChange?.({
@@ -477,8 +483,8 @@ export function CartWaiverModal({
               />
               <input
                 value={quickPhone}
-                onChange={(e) => setQuickPhone(e.target.value)}
-                placeholder="Phone"
+                onChange={(e) => setQuickPhone(formatPhoneInput(e.target.value, locationCountry))}
+                placeholder={locationCountry === "Canada" ? "(613) 799-1972" : "Phone"}
                 inputMode="tel"
                 style={{ fontSize: 13, padding: "8px 10px", border: "1.5px solid var(--ink-200)", borderRadius: 8 }}
               />

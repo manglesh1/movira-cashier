@@ -111,8 +111,8 @@ export default function TerminalProgressModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-2xl">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
-          <Icon name="credit-card" className="h-8 w-8 text-orange-600" />
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-violet-100">
+          <Icon name="credit-card" className="h-8 w-8 text-violet-600" />
         </div>
 
         <h2 className="text-2xl font-semibold text-gray-900">
@@ -122,7 +122,7 @@ export default function TerminalProgressModal({
           {instructions || "Hand the pin-pad to the customer"}
         </p>
 
-        <div className="mt-6 text-lg font-medium text-orange-600 tabular-nums">
+        <div className="mt-6 text-lg font-medium text-violet-600 tabular-nums">
           Waiting for card{dots}
         </div>
         <div className="mt-1 text-xs text-gray-400 tabular-nums">

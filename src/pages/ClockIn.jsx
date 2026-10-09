@@ -20,7 +20,7 @@ const PIN_LENGTH = 4;
 const initialsOf = (u) =>
   `${(u.firstName || "")[0] || ""}${(u.lastName || "")[0] || ""}`.toUpperCase();
 
-const PALETTE = ["#F45B0A", "#6A40F5", "#18B8C9", "#1F9D55", "#D6361A", "#E9A100", "#A33706", "#4F25C9"];
+const PALETTE = ["#7220E6", "#7220E6", "#18B8C9", "#1F9D55", "#D6361A", "#E9A100", "#480D9A", "#480D9A"];
 const colorFor = (u) => PALETTE[(((u.firstName || "?").charCodeAt(0) || 0) + (u.userId || 0)) % PALETTE.length];
 
 export default function ClockIn({ onUseEmailLogin }) {

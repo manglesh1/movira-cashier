@@ -338,7 +338,7 @@ export default function TerminalPaymentModal({
   const tone =
     phase === "approved" ? "#16A34A" :
     phase === "declined" || phase === "error" ? "#DC2626" :
-    "#FF8A00";
+    "#7220E6";
   const heading =
     phase === "starting" ? "Starting…" :
     phase === "waiting" ? "Waiting for card" :

@@ -2,29 +2,30 @@
 
 [data-pos="cashier"] {
   /* ---------- Brand palette ---------- */
-  --aero-orange-50:  #FFF4EC;
-  --aero-orange-100: #FFE4D0;
-  --aero-orange-200: #FFC59A;
-  --aero-orange-300: #FFA15F;
-  --aero-orange-400: #FF7A24;
-  --aero-orange-500: #F45B0A;  /* primary */
-  --aero-orange-600: #D14808;
-  --aero-orange-700: #A33706;
-  --aero-orange-800: #6E2604;
+  /* Legacy token names, mapped to the Movira logo palette. */
+  --aero-orange-50:  #F2EDFF;
+  --aero-orange-100: #E2D7FF;
+  --aero-orange-200: #C6B2FF;
+  --aero-orange-300: #A987FF;
+  --aero-orange-400: #8B5CFF;
+  --aero-orange-500: #7220E6;  /* primary */
+  --aero-orange-600: #5A31DA;
+  --aero-orange-700: #480D9A;
+  --aero-orange-800: #2A086E;
 
-  --aero-yellow-50:  #FFFBE6;
-  --aero-yellow-100: #FFF3B0;
-  --aero-yellow-200: #FFE36B;
-  --aero-yellow-300: #FFCF1F;  /* sunny accent */
-  --aero-yellow-400: #E9B400;
-  --aero-yellow-500: #B88800;
+  --aero-yellow-50:  #EAFBFD;
+  --aero-yellow-100: #D2F6FA;
+  --aero-yellow-200: #91E4EC;
+  --aero-yellow-300: #18B8C9;  /* logo cyan accent */
+  --aero-yellow-400: #0E8E9C;
+  --aero-yellow-500: #0A6570;
 
   --aero-electric-50:  #F1ECFF;
   --aero-electric-100: #DCD0FF;
   --aero-electric-200: #B79FFF;
   --aero-electric-300: #8E6BFF;
-  --aero-electric-400: #6A40F5;  /* electric purple accent */
-  --aero-electric-500: #4F25C9;
+  --aero-electric-400: #7220E6;  /* electric purple accent */
+  --aero-electric-500: #480D9A;
   --aero-electric-600: #3A1A99;
 
   --aero-cyan-300: #4AD8E6;
@@ -36,17 +37,17 @@
 
   /* ---------- Neutrals (warm-tinted) ---------- */
   --ink-0:   #FFFFFF;
-  --ink-25:  #FBF8F5;   /* surface (warm paper) */
-  --ink-50:  #F5F0EA;
-  --ink-100: #ECE5DC;
-  --ink-200: #D9CFC1;
-  --ink-300: #B7AB99;
-  --ink-400: #8C8273;
-  --ink-500: #5F584C;
-  --ink-600: #3F3A31;
-  --ink-700: #2A2620;
-  --ink-800: #1A1814;   /* near black, warm */
-  --ink-900: #0F0E0B;
+  --ink-25:  #FAFAFF;   /* surface (warm paper) */
+  --ink-50:  #F3F1FB;
+  --ink-100: #E7E3F1;
+  --ink-200: #D5CFE5;
+  --ink-300: #B1A9C4;
+  --ink-400: #867E99;
+  --ink-500: #625A74;
+  --ink-600: #464052;
+  --ink-700: #302A3E;
+  --ink-800: #1D1829;   /* near black, warm */
+  --ink-900: #100B1C;
 
   /* ---------- Semantic ---------- */
   --color-bg:            var(--ink-25);
@@ -334,7 +335,7 @@
 
 [data-pos="cashier"] .lookup-search__control:focus-within {
   border-color: var(--aero-orange-300);
-  box-shadow: 0 0 0 4px rgba(255, 122, 36, 0.12), var(--shadow-1);
+  box-shadow: 0 0 0 4px rgba(139, 92, 255, 0.12), var(--shadow-1);
 }
 
 [data-pos="cashier"] .lookup-search__input {

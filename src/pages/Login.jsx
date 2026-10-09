@@ -122,19 +122,11 @@ export default function Login({ onUsePinLogin }) {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-          <div
-            style={{
-              width: 56, height: 56, borderRadius: 16,
-              background: "var(--aero-orange-500)",
-              border: "2px solid var(--ink-800)",
-              color: "white",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 800,
-              boxShadow: "0 5px 0 var(--aero-orange-700)",
-            }}
-          >
-            A
-          </div>
+          <img
+            src="/branding/movira360-logo.png"
+            alt="Movira360"
+            style={{ width: 56, height: 56, borderRadius: 16, objectFit: "contain" }}
+          />
           <div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "var(--ink-900)", lineHeight: 1 }}>
               Cashier
