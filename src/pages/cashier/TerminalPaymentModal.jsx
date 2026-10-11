@@ -318,6 +318,7 @@ export default function TerminalPaymentModal({
 
   async function handleCancel() {
     if (phase === "starting" || cancelling) return;
+    clearTimeout(timeoutRef.current);
     setCancelling(true);
     if (transactionId && (phase === "waiting" || phase === "error")) {
       try {
@@ -325,7 +326,7 @@ export default function TerminalPaymentModal({
         if (!activeRef.current) return;
         if (!acceptResult(result)) {
           setOutcomeUnknown(true);
-          setMessage("Cancellation is not confirmed. Checking the previous payment before retrying.");
+          setMessage(result.message || "Cancellation is not confirmed. Checking the previous payment before retrying.");
           setCancelling(false);
           return;
         }

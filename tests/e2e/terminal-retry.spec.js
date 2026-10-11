@@ -54,18 +54,24 @@ async function mount(page, fixture, handler) {
 }
 
 test("uncertain cancellation stays open, then a late approval completes once", async ({ page }) => {
-  let starts = 0, approved = false;
+  await page.clock.install();
+  let starts = 0, cancels = 0, approved = false;
   await mount(page, "terminal", async path => {
     if (path.endsWith("/start")) { starts++; return { transactionId: 99, status: "pending" }; }
-    if (path.endsWith("/cancel")) return { transactionId: 99, status: "pending" };
+    if (path.endsWith("/cancel")) { cancels++; return { transactionId: 99, status: "pending", message: "Cancellation is not confirmed. Review the original attempt." }; }
     if (path.endsWith("/status")) return { transactionId: 99, status: approved ? "captured" : "pending" };
   });
   await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
   await page.getByRole("button", { name: "Cancel payment", exact: true }).click();
   await expect(page.getByText(/Cancellation is not confirmed/)).toBeVisible();
+  await expect(page.getByText("Cancellation is not confirmed. Review the original attempt.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Payment outcome unknown" })).toBeVisible();
+  await page.clock.fastForward(95000);
+  expect(cancels).toBe(1);
   expect(starts).toBe(1);
   await page.screenshot({ path: "test-results/terminal-pending-cancel.png" });
   approved = true;
+  await page.clock.fastForward(11000);
   await expect(page.getByText("Verified approval")).toBeVisible();
   expect(starts).toBe(1);
 });
