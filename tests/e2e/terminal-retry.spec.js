@@ -4,6 +4,44 @@ test.use({ channel: "chrome" });
 const configuredReader = { terminalId: 2, displayName: "Front desk", providerTerminalId: "TID-2", model: "T650c", serialNumber: "806-504-444",
   isDefault: true, selectable: true, availability: "unknown", availabilityLabel: "Configured - connectivity unknown" };
 
+test("unknown provider status retains the attempt and never automatically sends another sale or cancellation", async ({ page }) => {
+  await page.clock.install();
+  let starts = 0, cancels = 0, approved = false;
+  await mount(page, "terminal", async path => {
+    if (path.endsWith("/start")) { starts++; return { transactionId: 99, status: "pending" }; }
+    if (path.endsWith("/cancel")) { cancels++; return { status: "pending" }; }
+    if (path.endsWith("/status")) return approved ? { status: "captured" } : {
+      transactionId: 99, status: "pending", reviewRequired: false, reason: "session_unknown:NOTF",
+      message: "The existing payment needs review before another attempt.",
+    };
+  });
+  await expect(page.getByRole("heading", { name: "Payment outcome unknown" })).toBeVisible();
+  await page.clock.fastForward(95000);
+  expect(starts).toBe(1);
+  expect(cancels).toBe(0);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Payment outcome unknown" })).toBeVisible();
+  expect(starts).toBe(1);
+  await page.screenshot({ path: "test-results/terminal-unknown-outcome.png" });
+  approved = true;
+  await page.clock.fastForward(11000);
+  await expect(page.getByText("Verified approval")).toBeVisible();
+  expect(starts).toBe(1);
+});
+
+test("locked reader summary still loads the actual assignment", async ({ page }) => {
+  await mount(page, "summary", async () => null);
+  await expect(page.getByText("Front desk", { exact: true })).toBeVisible();
+  await expect(page.getByText("T650c / 806-504-444")).toBeVisible();
+  await expect(page.getByText("No assigned reader", { exact: true })).toHaveCount(0);
+});
+
+test("reader lookup errors do not claim the POS is unassigned", async ({ page }) => {
+  await mount(page, "summary", async path => path.endsWith("/readers") ? { httpStatus: 503, body: { message: "Unavailable" } } : null);
+  await expect(page.getByText("Reader settings unavailable", { exact: true })).toBeVisible();
+  await expect(page.getByText("No assigned reader", { exact: true })).toHaveCount(0);
+});
+
 async function mount(page, fixture, handler) {
   page.on("pageerror", error => console.error("Browser error:", error.message));
   await page.route("**/api/**", async route => {
@@ -16,18 +54,24 @@ async function mount(page, fixture, handler) {
 }
 
 test("uncertain cancellation stays open, then a late approval completes once", async ({ page }) => {
-  let starts = 0, approved = false;
+  await page.clock.install();
+  let starts = 0, cancels = 0, approved = false;
   await mount(page, "terminal", async path => {
     if (path.endsWith("/start")) { starts++; return { transactionId: 99, status: "pending" }; }
-    if (path.endsWith("/cancel")) return { transactionId: 99, status: "pending" };
+    if (path.endsWith("/cancel")) { cancels++; return { transactionId: 99, status: "pending", message: "Cancellation is not confirmed. Review the original attempt." }; }
     if (path.endsWith("/status")) return { transactionId: 99, status: approved ? "captured" : "pending" };
   });
   await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
   await page.getByRole("button", { name: "Cancel payment", exact: true }).click();
   await expect(page.getByText(/Cancellation is not confirmed/)).toBeVisible();
+  await expect(page.getByText("Cancellation is not confirmed. Review the original attempt.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Payment outcome unknown" })).toBeVisible();
+  await page.clock.fastForward(95000);
+  expect(cancels).toBe(1);
   expect(starts).toBe(1);
   await page.screenshot({ path: "test-results/terminal-pending-cancel.png" });
   approved = true;
+  await page.clock.fastForward(11000);
   await expect(page.getByText("Verified approval")).toBeVisible();
   expect(starts).toBe(1);
 });
