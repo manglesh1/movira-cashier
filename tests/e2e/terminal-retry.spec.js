@@ -150,26 +150,24 @@ test("changing products at the same total requires explicit separate checkout", 
   expect(starts).toBe(0);
 });
 
-test("reader picker displays identity and unknown connectivity, and dispatches only the chosen reader", async ({ page }) => {
+test("Cashier shows only its assigned reader and cannot choose another", async ({ page }) => {
   const requests = [];
+  let available = false;
   await mount(page, "terminal", async (path, request) => {
-    if (path.endsWith("/readers")) return { data: { readers: [configuredReader,
-      { ...configuredReader, terminalId: 3, displayName: "Party desk", isDefault: false },
-      { ...configuredReader, terminalId: 4, displayName: "Busy reader", isDefault: false, selectable: false, availabilityLabel: "Busy - unresolved payment" }] } };
+    if (path.endsWith("/readers")) return { data: { defaultTerminalId: 2, readers: [{ ...configuredReader, selectable: available },
+      { ...configuredReader, terminalId: 3, displayName: "Other station" }] } };
     if (path.endsWith("/start")) { requests.push(request.postDataJSON()); return { transactionId: 99, status: "pending" }; }
     if (path.endsWith("/status")) return { transactionId: 99, status: "pending" };
-  }, { autoStart: false });
-  await page.getByRole("combobox", { name: "Card reader", exact: true }).selectOption("2");
+  });
   await expect(page.getByText("T650c / 806-504-444")).toBeVisible();
-  await expect(page.getByRole("status")).toHaveText("Configured - connectivity unknown");
-  await expect(page.getByRole("option", { name: /Busy reader/ })).toHaveAttribute("disabled", "");
-  expect(requests).toHaveLength(0);
-  await page.screenshot({ path: "test-results/reader-picker-desktop.png" });
-  await page.getByRole("combobox", { name: "Card reader", exact: true }).selectOption("3");
-  await page.getByRole("button", { name: "Use reader", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
-  expect(requests[0].terminalId).toBe(3);
   await expect(page.getByRole("combobox")).toHaveCount(0);
+  await expect(page.getByText("Other station")).toHaveCount(0);
+  expect(requests).toHaveLength(0);
+  available = true;
+  await page.getByRole("button", { name: "Refresh assigned reader" }).click();
+  await page.getByRole("button", { name: "Continue payment", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
+  expect(requests[0].terminalId).toBe(2);
   await page.reload();
   await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
   expect(requests).toHaveLength(1);
@@ -182,10 +180,10 @@ test("reader list failure blocks new payment and refresh recovers", async ({ pag
     if (path.endsWith("/start")) starts++;
   }, { autoStart: false });
   await expect(page.getByRole("alert")).toHaveText("Reader list unavailable");
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Continue payment", exact: true })).toBeDisabled();
   failure = false;
-  await page.getByRole("button", { name: "Refresh reader availability" }).click();
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "Refresh assigned reader" }).click();
+  await expect(page.getByRole("button", { name: "Continue payment", exact: true })).toBeEnabled();
   expect(starts).toBe(0);
 });
 
@@ -197,21 +195,19 @@ test("no readers and busy default cannot silently start or switch a payment", as
       { ...configuredReader, terminalId: 3, displayName: "Backup reader", isDefault: false }] } };
     if (path.endsWith("/start")) starts++;
   }, { autoStart: false });
-  await expect(page.getByRole("alert")).toContainText("No card readers configured");
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeDisabled();
+  await expect(page.getByRole("alert")).toContainText("No compatible reader assigned");
+  await expect(page.getByRole("button", { name: "Continue payment", exact: true })).toBeDisabled();
   empty = false;
-  await page.getByRole("button", { name: "Refresh reader availability" }).click();
+  await page.getByRole("button", { name: "Refresh assigned reader" }).click();
   await expect(page.getByRole("status")).toHaveText("Busy - unresolved payment");
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeDisabled();
-  await page.getByRole("combobox").selectOption("3");
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Continue payment", exact: true })).toBeDisabled();
+  await expect(page.getByRole("combobox")).toHaveCount(0);
   expect(starts).toBe(0);
 });
 
-test("a busy-reader race allows explicit reselection without reusing the rejected request", async ({ page }) => {
+test("a busy-reader race cannot expose a Cashier override", async ({ page }) => {
   const requests = [];
   await mount(page, "terminal", async (path, request) => {
-    if (path.endsWith("/readers")) return { data: { defaultTerminalId: 2, readers: [configuredReader, { ...configuredReader, terminalId: 3, isDefault: false }] } };
     if (path.endsWith("/start")) {
       requests.push(request.postDataJSON());
       return requests.length === 1 ? { httpStatus: 409, body: { error: "terminal_busy", message: "Reader became busy" } }
@@ -219,34 +215,31 @@ test("a busy-reader race allows explicit reselection without reusing the rejecte
     }
   });
   await expect(page.getByText("Reader became busy")).toBeVisible();
-  await page.getByRole("button", { name: "Change reader", exact: true }).click();
-  await page.getByRole("combobox").selectOption("3");
-  await page.getByRole("button", { name: "Use reader", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Change reader", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Check / retry payment", exact: true }).click();
   await expect(page.getByText("Verified approval")).toBeVisible();
-  expect(requests.map(r => r.terminalId)).toEqual([2, 3]);
-  expect(requests[0].idempotencyKey).not.toBe(requests[1].idempotencyKey);
+  expect(requests.map(r => r.terminalId)).toEqual([2, 2]);
 });
 
-test("reader picker fits a narrow screen with a long device label", async ({ page }) => {
+test("read-only reader confirmation fits a narrow screen", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await mount(page, "terminal", async path => path.endsWith("/readers") ? { data: { readers: [{ ...configuredReader,
-    displayName: "Front desk physical terminal with a long venue-specific name" }] } } : null, { autoStart: false });
-  await page.getByRole("combobox").selectOption("2");
-  await expect(page.getByRole("button", { name: "Use reader", exact: true })).toBeEnabled();
-  for (const locator of [page.getByRole("combobox"), page.getByRole("button", { name: "Use reader", exact: true }), page.getByRole("button", { name: "Refresh reader availability" })]) {
+  await mount(page, "terminal", async path => path.endsWith("/readers") ? { data: { defaultTerminalId: 2, readers: [{ ...configuredReader,
+    selectable: false, displayName: "Front desk physical terminal with a long venue-specific name" }] } } : null);
+  await expect(page.getByRole("button", { name: "Continue payment", exact: true })).toBeDisabled();
+  for (const locator of [page.getByRole("button", { name: "Continue payment", exact: true }), page.getByRole("button", { name: "Refresh assigned reader" })]) {
     const box = await locator.boundingBox();
     expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x + box.width).toBeLessThanOrEqual(375);
     expect(box.y + box.height).toBeLessThanOrEqual(667);
   }
-  await page.screenshot({ path: "test-results/reader-picker-mobile.png" });
+  await page.screenshot({ path: "test-results/reader-readonly-mobile.png" });
 });
 
-test("Admin default starts automatically and a later default change cannot redirect recovery", async ({ page }) => {
+test("Control assignment starts automatically and a later default change cannot redirect recovery", async ({ page }) => {
   let defaultTerminalId = 3;
   const starts = [];
   await mount(page, "terminal", async (path, request) => {
     if (path.endsWith("/readers")) return { data: { defaultTerminalId, readers: [configuredReader,
-      { ...configuredReader, terminalId: 3, displayName: "Admin-selected reader", isDefault: false }] } };
+      { ...configuredReader, terminalId: 3, displayName: "Control-assigned reader", isDefault: false }] } };
     if (path.endsWith("/start")) { starts.push(request.postDataJSON()); return { transactionId: 99, status: "pending" }; }
     if (path.endsWith("/status")) return { transactionId: 99, status: "pending" };
   });
@@ -257,38 +250,31 @@ test("Admin default starts automatically and a later default change cannot redir
   defaultTerminalId = 2;
   await page.reload();
   await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
-  await expect(page.getByText("Admin-selected reader", { exact: true })).toBeVisible();
+  await expect(page.getByText("Control-assigned reader", { exact: true })).toBeVisible();
   expect(starts).toHaveLength(1);
 });
 
-test("checkout shows its default and permits an explicit one-sale reader override", async ({ page }) => {
+test("checkout uses the Control assignment with no one-sale override", async ({ page }) => {
   const starts = [];
   await mount(page, "checkout", async (path, request) => {
-    if (path.endsWith("/readers")) return { data: { defaultTerminalId: 2, readers: [configuredReader,
-      { ...configuredReader, terminalId: 3, displayName: "Backup desk", isDefault: false }] } };
     if (path.endsWith("/checkout")) return { booking: { bookingId: 10, bookingNumber: "BK-TEST", totalAmount: 550, balanceDue: 550, status: "pending" }, pendingPayment: null };
     if (path.endsWith("/start")) { starts.push(request.postDataJSON()); return { transactionId: 99, status: "pending" }; }
     if (path.endsWith("/status")) return { transactionId: 99, status: "pending" };
   });
   await expect(page.getByText("Front desk", { exact: true })).toBeVisible();
-  expect(starts).toHaveLength(0);
-  await page.screenshot({ path: "test-results/admin-default-checkout.png" });
-  await page.getByRole("button", { name: "Change reader", exact: true }).click();
-  await page.getByRole("combobox", { name: "Card reader", exact: true }).selectOption("3");
-  await page.getByRole("button", { name: "Use reader", exact: true }).click();
-  await expect(page.getByText("Backup desk", { exact: true })).toBeVisible();
-  expect(starts).toHaveLength(0);
+  await expect(page.getByRole("button", { name: "Change reader", exact: true })).toHaveCount(0);
+  await expect(page.getByText("Managed in Movira Control")).toBeVisible();
   await page.getByRole("button", { name: /Complete The Order/i }).click();
   await expect(page.getByText(/Continuing saved order BK-TEST/)).toBeVisible();
   await page.getByRole("button", { name: /Complete The Order/i }).click();
   await expect(page.getByRole("heading", { name: "Waiting for card" })).toBeVisible();
   expect(starts).toHaveLength(1);
-  expect(starts[0].terminalId).toBe(3);
+  expect(starts[0].terminalId).toBe(2);
   await page.getByRole("button", { name: "Leave pending", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Change reader", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Change reader", exact: true })).toHaveCount(0);
 });
 
-test("Complete Order refreshes the Admin default rather than using the panel's cached reader", async ({ page }) => {
+test("Complete Order refreshes the Control assignment rather than using the panel's cached reader", async ({ page }) => {
   let defaultTerminalId = 2;
   const starts = [];
   await mount(page, "checkout", async (path, request) => {

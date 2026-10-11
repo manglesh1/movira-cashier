@@ -45,7 +45,6 @@ export default function TerminalPaymentModal({
   locationId,
   currency, // optional — Stripe account currency
   posDeviceId, // this till — backend resolves its DEFAULT card reader
-  readerId, // explicit one-sale override; otherwise fetch the Admin default
   sourceType = "booking",
   sourceId = null,
   // Optional on-glass tip context. When present (e.g. { allocation,
@@ -374,7 +373,7 @@ export default function TerminalPaymentModal({
           <div style={{ marginBottom: 12, fontSize: 13, overflowWrap: "anywhere" }}>{attemptRef.current?.readerName || selectedReader?.displayName}</div>}
         {phase === "reader" ? (
           <TerminalReaderPicker posDeviceId={posDeviceId} locationId={locationId} currency={currency}
-            preferredId={readerId} autoUseDefault={autoUseDefault} onSelect={chooseReader} onClose={onClose} />
+            autoUseDefault={autoUseDefault} onSelect={chooseReader} onClose={onClose} />
         ) : phase === "tip" ? (
           // ── Tip allocation step (the guest enters the amount on the reader) ──
           <div style={{ textAlign: "left" }}>
@@ -446,12 +445,6 @@ export default function TerminalPaymentModal({
               if (readAttempt(sessionStorage, storageKey)) beginStart(tip && tip.allocation ? tip : null);
               else { setTransactionId(null); setAutoUseDefault(true); setPhase("reader"); }
             }}> {phase === "error" ? "Check / retry payment" : "Retry payment"} </button>
-          )}
-          {["error", "declined", "cancelled"].includes(phase) && !attemptRef.current && (
-            <button type="button" className="a-btn" onClick={() => {
-              startedRef.current = false; doneRef.current = false; setCancelling(false);
-              setTransactionId(null); setAutoUseDefault(false); setPhase("reader");
-            }}><Icon name="credit-card" size={16} /> Change reader</button>
           )}
           {phase === "approved" ? (
             <button type="button" className="a-btn a-btn--primary" onClick={() => onClose?.()}
