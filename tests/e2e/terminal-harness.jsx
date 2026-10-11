@@ -10,6 +10,7 @@ import { baseApi } from "../../src/api/baseApi";
 import TerminalPaymentModal from "../../src/pages/cashier/TerminalPaymentModal";
 import TerminalProgressModal from "../../src/pages/cashier/TerminalProgressModal";
 import SellPaymentOverlay from "../../src/pages/cashier/SellPaymentOverlay";
+import TerminalReaderSummary from "../../src/pages/cashier/TerminalReaderSummary";
 
 const store = configureStore({ reducer: { [baseApi.reducerPath]: baseApi.reducer,
   auth: () => ({ locations: [{ locationId: 3 }] }), pos: () => ({}) },
@@ -25,6 +26,7 @@ function Harness() {
     onApproved: () => { setApproved(true); setOpen(false); } };
   return <><Toaster /><button onClick={() => setOpen(true)}>Reopen payment</button>
     {approved && <p>Verified approval</p>}
+    {fixture === "summary" && <TerminalReaderSummary posDeviceId={4} locationId={3} locked />}
     {fixture === "terminal" && open && <TerminalPaymentModal {...props} />}
     {fixture === "progress" && open && <TerminalProgressModal transactionId={99} amount={550}
       onComplete={props.onApproved} onCancelled={() => setOpen(false)} onFailed={() => setOpen(false)} />}

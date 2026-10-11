@@ -29,6 +29,7 @@ import { TIP_ALLOCATIONS } from "../../features/tips/tipMath";
 import ManagerOverridePrompt from "../../components/ManagerOverridePrompt";
 import TerminalReaderPicker from "./TerminalReaderPicker";
 import { attemptStorageKey, readAttempt, terminalOutcome } from "../../features/payments/terminalAttempt";
+import { needsTerminalReview } from "../../features/payments/terminalReview";
 
 const POLL_MS = 2500;
 const TIMEOUT_MS = 90000; // request cancellation, then reconcile until confirmed
@@ -68,6 +69,7 @@ export default function TerminalPaymentModal({
   const [autoUseDefault, setAutoUseDefault] = useState(true);
   const [transactionId, setTransactionId] = useState(null);
   const [message, setMessage] = useState("");
+  const [outcomeUnknown, setOutcomeUnknown] = useState(false);
   const startedRef = useRef(false);
   const pollRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -156,7 +158,8 @@ export default function TerminalPaymentModal({
       setTransactionId(id);
       if (acceptResult(res)) return;
       setPhase("waiting");
-      setMessage(res.instructions || "Ask the customer to tap their card on the reader.");
+      setOutcomeUnknown(needsTerminalReview(res));
+      setMessage(needsTerminalReview(res) ? res.message || "Payment outcome unknown. Do not start another charge." : res.instructions || "Ask the customer to tap their card on the reader.");
     } catch (err) {
       if (!activeRef.current) return;
       const detail = err?.data?.detail;
@@ -190,6 +193,7 @@ export default function TerminalPaymentModal({
       setAutoUseDefault(true);
       setTransactionId(null);
       setMessage("");
+      setOutcomeUnknown(false);
       setTipAllocation(tipDefaults.defaultAllocation || "booking_host");
       setTipManagerAuditId(null);
       return;
@@ -259,8 +263,10 @@ export default function TerminalPaymentModal({
         if (stopped || !activeRef.current) return;
         errorStreak = 0;
         if (acceptResult(r)) return;
-        if (r.reviewRequired) {
+        if (needsTerminalReview(r)) {
           slowPolling = true;
+          setOutcomeUnknown(true);
+          clearTimeout(timeoutRef.current);
           setMessage(r.message || "Payment outcome is unknown. Review this attempt before starting another payment.");
         }
         // else still processing — keep polling
@@ -300,9 +306,10 @@ export default function TerminalPaymentModal({
       }
       if (doneRef.current || stopped || !activeRef.current) return;
       setMessage("Cancellation is not confirmed. Still checking the previous payment; do not charge again yet.");
+      setOutcomeUnknown(true);
     };
 
-    timeoutRef.current = setTimeout(onTimeout, TIMEOUT_MS);
+    if (!outcomeUnknown) timeoutRef.current = setTimeout(onTimeout, TIMEOUT_MS);
     poll(); // immediate first check
 
     return () => { stopped = true; clearTimers(); };
@@ -317,12 +324,14 @@ export default function TerminalPaymentModal({
         const result = await cancelPayment({ transactionId, reason: "cashier cancelled" }).unwrap();
         if (!activeRef.current) return;
         if (!acceptResult(result)) {
+          setOutcomeUnknown(true);
           setMessage("Cancellation is not confirmed. Checking the previous payment before retrying.");
           setCancelling(false);
           return;
         }
         if (terminalOutcome(result) === "approved") return;
       } catch {
+        setOutcomeUnknown(true);
         setMessage("Could not confirm cancellation. The payment may still complete; check again before retrying.");
         setCancelling(false);
         return;
@@ -340,7 +349,7 @@ export default function TerminalPaymentModal({
     "#7220E6";
   const heading =
     phase === "starting" ? "Starting…" :
-    phase === "waiting" ? "Waiting for card" :
+    phase === "waiting" ? (outcomeUnknown ? "Payment outcome unknown" : "Waiting for card") :
     phase === "approved" ? "Approved" :
     phase === "declined" ? "Declined" :
     phase === "cancelled" ? "Cancelled" :
