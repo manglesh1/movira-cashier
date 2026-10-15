@@ -1010,6 +1010,9 @@ function SelectedBookingDetail({ booking, onCheckedIn }) {
     () => normalizeCheckInParticipantsPayload(checkInData),
     [checkInData]
   );
+  const wristbandMode = checkInData?.data?.wristbandMode || "none";
+  const wristbandProviderMode =
+    checkInData?.data?.wristbandProviderMode === "external" ? "external" : "internal";
   const participantsById = useMemo(() => {
     const map = new Map();
     allParticipants.forEach((participant) => {
@@ -2048,7 +2051,10 @@ function SelectedBookingDetail({ booking, onCheckedIn }) {
                       the cashier acts where their eye already is. Only
                       renders when this ticket has a participant and the
                       ticket isn't already redeemed. */}
-                  {t.participantId && !isRedeemed && (
+                  {wristbandMode === "rfid" &&
+                    wristbandProviderMode === "internal" &&
+                    t.participantId &&
+                    !isRedeemed && (
                     <TicketWristbandBind
                       bookingId={booking?.bookingId}
                       participantId={Number(t.participantId)}

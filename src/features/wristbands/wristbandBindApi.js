@@ -2,8 +2,9 @@
 // aeroSportsAdmin controllers/wristbandBindController.js.
 //
 //   bindWristband     ({ bookingId, participantId, rfidUid }) → success
-//   unbindWristband   ({ bookingId, participantId })          → success
+//   unbindWristband   ({ bookingId, participantId, status? }) → returned/lost
 //   lookupWristband   ({ rfidUid })                            → participant + booking
+//   assignment history is retained server-side for audit and support.
 //
 // The Cashier's CheckIn screen calls bindWristband when a cashier arms
 // a participant's "Bind" button and the next RFID scan lands. The
